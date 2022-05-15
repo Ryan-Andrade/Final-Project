@@ -8,4 +8,6 @@ Everyone is creating their own Branches and will be dropping the last column and
 
 ## Ideas
 We should consider encoding the dates as 0-252 (there are 253 trading days in the year).
-There may be some similarities on specific days each year that the algorithm may be able to detect patterns within. 
+There may be some similarities on specific days each year that the algorithm may be able to detect patterns within.
+
+In order to add volume as a learning metric to our algorithm we would need the data listed here: https://firstratedata.com/i/stock/CMS
