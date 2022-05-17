@@ -9,11 +9,9 @@ What did you do last time?
 We created the ML algorithm to predict if a stock will increase or decrease by the close of market 
 
 What are you currently working on/ what progress will we see before next time?
-
-Create a flask/html page to create an interactive webpage for data visualization
+Creating a flask/html page to create an interactive webpage for data visualization
 
 Is there anything blocking your progress?
-
 Current knowledge HTML and Flask (need to review modules for a refresher)
 
 Everyone is creating their own Branches and will be dropping the last column and filtering for the start of 2021. Then creating summary statistics and a visualization to help further understand. 
