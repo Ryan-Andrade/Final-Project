@@ -31,7 +31,7 @@
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js">
         </script>
         <!-- Add a button to activate scraping script -->
-        <!--<p><a class="btn btn-warning btn-lg" href="/ml" role="button">Run The Algorithm</a></p> -->
+        <p><a class="btn btn-warning btn-lg" href="/ml" role="button">Run The Algorithm</a></p>
         <script>
             function myfunction(stock) {
             
@@ -44,6 +44,12 @@
                     data: JSON.stringify(s)});
             }
         </script>
+    </div>
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+          <h1 class="display-4">Accuracy Score</h1>
+          <h4 class="media-heading">{{ prediction.accuracy_score }}</h4>
+        </div>
     </div>
 </body>
 </html>
