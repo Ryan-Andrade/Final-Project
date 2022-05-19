@@ -17,9 +17,9 @@ def index():
 @app.route('/test', methods=['POST'])
 def test():
     output = request.get_json()
-    result = json.loads(output) #this converts the json output to a python dictionary
-    print(result) # Printing the new dictionary
-    mongo.db.stock_ticker.insert_one({'ticker': result})
+    result = json.loads(output)
+    print(result)
+    mongo.db.stock_ticker.insert_one({'ticker': result}) # Store result to MongoDB collection
     return result
 
 #@app.route("/ml")
