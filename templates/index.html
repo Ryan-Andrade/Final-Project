@@ -5,16 +5,43 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link 
-            rel="stylesheet"
-            href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-            integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-            crossorigin="anonymous"
-          />
-    <link rel="stylesheet" href="static/css/style.css">
+    <link rel="stylesheet" href="../static/css/style.css">
 </head>
-    <title>{{ mytitle }}</title>
 <body>
-    <p>{{ mycontent }}</p>
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+          <h1 class="display-4">Welcome</h1>
+          <p class="lead">This is a machine learning algorithm that predicts the direction of the stock market.</p>
+        </div>
+    </div>
+    <div class="container">
+        <label for="stocks">Choose a stock:</label>
+        <select name="stock_list" onchange="myfunction(this.value);">
+            <option value="AMPY">AMPY</option>
+            <option value="BEP">BEP</option>
+            <option value="CMS">CMS</option>
+            <option value="CVE">CVE</option>
+            <option value="EPD">EPD</option>
+            <option value="HASI">HASI</option>
+            <option value="NEE">NEE</option>
+            <option value="OXY">OXY</option>
+            <option value="PAA">PAA</option>
+            <option value="SPWR">SPWR</option>
+        </select>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js">
+        </script>
+        <script>
+            function myfunction(stock) {
+            
+                const s = JSON.stringify(stock); // Stringify converts a JavaScript object or value to a JSON string
+                console.log(s); // Prints the variables to console window, which are in the JSON format
+                $.ajax({
+                    url:"/test",
+                    type:"POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(s)});
+            }
+        </script>
+    </div>
 </body>
 </html>
