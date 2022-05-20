@@ -46,10 +46,6 @@ def preprocessing():
     # Train the logistic regression model using resampled data
     logreg = LogisticRegression(solver='lbfgs', random_state=1)
     logreg.fit(X_res, y_res)
-    y_pred = logreg.predict(X_test)
-    balanced_accuracy_score(y_test, y_pred)
-    data = {
-        "ticker": ticker,
-        "balanced_accuracy_score": balanced_accuracy_score
-    }
-    return data
+    y_pred = logreg.predict(X_test_scaled)
+    accuracy_score = balanced_accuracy_score(y_test, y_pred)
+    return accuracy_score

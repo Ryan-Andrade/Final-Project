@@ -21,18 +21,15 @@ def test():
     output = request.get_json()
     result = json.loads(output)
     print(result)
-    mongo.db.prediction.insert_one({}, {'ticker': result}) # Store only one result to MongoDB collection
+    mongo.db.prediction.replace_one({}, {'ticker': result}, upsert=True) # Store only one result to MongoDB collection
     return result
 
 @app.route('/ml')
 def logistic_regression():
-    prediction = mongo.db.predcition
+    prediction = mongo.db.prediction
     prediction_data = algorithm.preprocessing()
-    prediction.insert_one({}, {"$set":prediction_data})
+    prediction.replace_one({}, {'accuracy_score': prediction_data}, upsert=True)
     return redirect('/', code=302)
-
-
-
 
 if __name__ == "__main__":
     app.run(debug = True)
