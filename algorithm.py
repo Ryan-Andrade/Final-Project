@@ -51,10 +51,11 @@ def preprocessing():
     # Naive Random Oversampling
     ros = RandomOverSampler(random_state=0)
     X_res, y_res = ros.fit_resample(X_train_scaled, y_train)
-    
+
     # Train the logistic regression model using resampled data
     logreg = LogisticRegression(solver='lbfgs', random_state=1)
     logreg.fit(X_res, y_res)
     y_pred = logreg.predict(X_test_scaled)
     accuracy_score = balanced_accuracy_score(y_test, y_pred)
-    return accuracy_score
+    data = {"accuracy_score":accuracy_score, "ticker": ticker}
+    return data

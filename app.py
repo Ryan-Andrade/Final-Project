@@ -28,7 +28,7 @@ def test():
 def logistic_regression():
     prediction = mongo.db.prediction
     prediction_data = algorithm.preprocessing()
-    prediction.replace_one({}, {'accuracy_score': prediction_data}, upsert=True)
+    prediction.update_one({}, {'$set': prediction_data}, upsert=True)
     return redirect('/', code=302)
 
 if __name__ == "__main__":
