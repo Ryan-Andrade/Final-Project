@@ -3,16 +3,13 @@ import numpy as np
 import pandas as pd
 import yfinance as yf
 import datetime as dt
-from datetime import timedelta
 from pymongo import MongoClient
 from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import balanced_accuracy_score
-from sklearn.metrics import confusion_matrix
 from imblearn.over_sampling import RandomOverSampler
-from imblearn.metrics import classification_report_imbalanced
 le = LabelEncoder()
 scaler = StandardScaler()
 
@@ -25,24 +22,23 @@ def mongo_connection():
     return ticker
 
 def download_data():
-    ticker = mongo_connection()
-    yesterday = dt.datetime.date(dt.datetime.now() - timedelta(days= 3)).isoformat()
-    data = yf.download(ticker, '2021-01-01', yesterday, interval='1d')
-    data.drop(['Adj Close', 'Volume'], axis=1, inplace=True)    
+    ticker = yf.Ticker(mongo_connection())
+    data = ticker.history(period='2y')
+    data = pd.DataFrame(data)
+    data = data[:-1]
     data['Day Result'] = np.where(data['Close'] > data['Open'], 1, 0)
-    df = pd.DataFrame(data)
-    df.drop(columns='Close', inplace=True)
-    return df
+    data.drop(['Volume', 'Close', 'Dividends', 'Stock Splits'], axis=1, inplace=True)    
+    return data
 
 def preprocessing():
-    df = download_data()
+    data = download_data()
     # Encode the data
-    df['Open'] = le.fit_transform(df['Open'])
-    df['High'] = le.fit_transform(df['High'])
-    df['Low'] = le.fit_transform(df['Low'])
+    data['Open'] = le.fit_transform(data['Open'])
+    data['High'] = le.fit_transform(data['High'])
+    data['Low'] = le.fit_transform(data['Low'])
     # Split data into training and testing sets
-    X = df.drop(['Day Result'], axis=1)
-    y = df['Day Result'].values
+    X = data.drop(['Day Result'], axis=1)
+    y = data['Day Result'].values
     # Build the logistic regression model
     X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=0)
     # Scale and normalize the data
@@ -64,10 +60,9 @@ def Naive_Random_Oversampling(test):
     return prediction, accuracy_score
 
 def test_data():
-    ticker = mongo_connection()
-    today = dt.datetime.date(dt.datetime.now() - timedelta(days= 2)).isoformat()
-    test_data = yf.download(ticker, start= today)
-    cleaned_test_data = test_data.drop(['Volume', 'Close', 'Adj Close'], axis=1)
+    ticker = yf.Ticker(mongo_connection())
+    test_data = ticker.history(period='1d')
+    cleaned_test_data = test_data.drop(['Volume', 'Close', 'Dividends', 'Stock Splits'], axis=1)
     cleaned_test_data['Open'] = le.fit_transform(cleaned_test_data['Open'])
     cleaned_test_data['High'] = le.fit_transform(cleaned_test_data['High'])
     cleaned_test_data['Low'] = le.fit_transform(cleaned_test_data['Low'])
