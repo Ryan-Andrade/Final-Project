@@ -27,7 +27,7 @@ def test():
 @app.route('/ml')
 def logistic_regression():
     prediction = mongo.db.prediction
-    prediction_data = algorithm.preprocessing()
+    prediction_data = algorithm.machine_learning()
     prediction.update_one({}, {'$set': prediction_data}, upsert=True)
     return redirect('/', code=302)
 
