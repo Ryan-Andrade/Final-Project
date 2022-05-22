@@ -26,7 +26,7 @@ def mongo_connection():
 
 def download_data():
     ticker = mongo_connection()
-    yesterday = dt.datetime.date(dt.datetime.now() - timedelta(days= 1)).isoformat()
+    yesterday = dt.datetime.date(dt.datetime.now() - timedelta(days= 3)).isoformat()
     data = yf.download(ticker, '2021-01-01', yesterday, interval='1d')
     data.drop(['Adj Close', 'Volume'], axis=1, inplace=True)    
     data['Day Result'] = np.where(data['Close'] > data['Open'], 1, 0)
@@ -65,7 +65,7 @@ def Naive_Random_Oversampling(test):
 
 def test_data():
     ticker = mongo_connection()
-    today = dt.datetime.date(dt.datetime.now()).isoformat()
+    today = dt.datetime.date(dt.datetime.now() - timedelta(days= 2)).isoformat()
     test_data = yf.download(ticker, start= today)
     cleaned_test_data = test_data.drop(['Volume', 'Close', 'Adj Close'], axis=1)
     cleaned_test_data['Open'] = le.fit_transform(cleaned_test_data['Open'])
