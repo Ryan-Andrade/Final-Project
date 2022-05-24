@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Price Direction</title>
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6 m-auto">
+                <h1 class="text-center mb-3">
+                    Stock Closing Price Prediction
+                </h1>
+            </div>
+            <div class="col-md-8">
+                <div class="form-group">
+                    <input type="text" id="search"
+                    onchange="myfunction(this.value);"
+                    class="form-control form-control-lg"
+                    placeholder="Enter stock symbol...">
+                </div>
+                <div id="match-list"></div>
+            </div>
+            <div class="col-md-4">
+                 <!-- Add a button to activate scraping script -->
+                <p><a class="btn btn-warning btn-lg" href="/ml" role="button">Run The Algorithm</a></p>
+            </div>
+        </div>
+    </div>
+    <script>
+        const search = document.getElementById('search');
+        const matchList = document.getElementById('match-list');
+
+        // Search stocks.json and filter it
+        const searchStocks = async searchText => {
+            const res = await fetch('../static/data/stocks1.json');
+            const stocks = await res.json();
+
+            console.log(stocks);
+
+            // Get matches to current text input
+            let matches = stocks.filter(stock => {
+                const regex = new RegExp(`^${searchText}`, 'gi');
+                return stock.ticker.match(regex) || stock.name.match(regex)
+            });
+
+            if(searchText.length == 0) {
+                matches = [];
+                matchList.innerHTML = '';
+            }
+
+            outputHtml(matches);
+        };
+
+        // Show results in HTML
+        const outputHtml = matches => {
+            if(matches.length > 0) {
+                const html = matches.map(
+                    match => `
+                    <div class="card card-body mb-1">
+                        <h4>${match.name} (${match.ticker})
+                        </h4>
+                    </div>
+                `
+                )
+                .join('');
+
+            matchList.innerHTML = html;
+            }
+        }
+
+
+        search.addEventListener('input', () => searchStocks(search.value));
+    </script>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js">
+        </script>
+        <script>
+            function myfunction(stock) {
+            
+                const s = JSON.stringify(stock); // Stringify converts a JavaScript object or value to a JSON string
+                console.log(s); // Prints the variables to console window, which are in the JSON format
+                $.ajax({
+                    url:"/test",
+                    type:"POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(s)});
+            }
+        </script>
+    </div>
+    <div class="row">
+        <div class="col-md-4 m-auto">
+          <h4 class="text-center display-10">Stock Symbol</h4>
+          <h4 class="text-center media-heading">{{ prediction.ticker}}</h4>
+        </div>
+        <div class="col-md-4 m-auto">
+          <h4 class="text-center display-10">Accuracy Score</h4>
+          <h4 class="text-center media-heading">{{ prediction.accuracy_score }}</h4>
+        </div>
+        <div class="col-md-4 m-auto">
+          <h4 class="text-center display-10">Prediction</h4>
+          <h4 class="text-center media-heading">{{ prediction.prediction }}</h4>
+        </div>
+    </div>
+</body>
+</html>
