@@ -14,10 +14,12 @@
                 <h1 class="text-center mb-3">
                     Stock Closing Price Prediction
                 </h1>
+                <p>This application has been developed to assist day traders with their investment decisions. It is a supervised machine learning algorithm that trains on 3 simple time-series variables: Opening, High, and Low prices to determine the direction of the closing price. Users have the ability to customize which algorithm they would like to use, as well as the amount of historical data they would like the algorithm to train on. Day traders can leverage this application during market hours whenever new high or low prices are recorded. </p>
+                <p> Enjoy! </p>
             </div>
         </div>
         <div class="row">
-            <div class="col align-self-start">
+            <div class="col-md-3">
                 <select name="algorithms" id="algorithms" onchange="myfunction();">
                     <option value="naive"> Select an ML algorithm...</option>
                     <option value="naive">Naive Random Oversampling</option>
@@ -28,7 +30,7 @@
                     <option value="easy">Easy Ensemble Adaboost Classifier</option>
                 </select>
                 <select name="period" id="period" onchange="myfunction();">
-                    <option value="2y"> Select a time period...</option>
+                    <option value="2y"> Select a training period...</option>
                     <option value="5d">5 days</option>
                     <option value="1mo">1 month</option>
                     <option value="3mo">3 months</option>
@@ -135,7 +137,7 @@
         </div>
     </div>
     <!-- TradingView Widget BEGIN -->
-    <div class="col-md-8 m-auto">
+    <div class="col-md-6 m-auto">
         <div id="tradingview_0a9d5"></div>
         <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
         <script type="text/javascript">
