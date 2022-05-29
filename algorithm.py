@@ -147,8 +147,10 @@ def machine_learning():
         prediction, accuracy_score = Balanced_Random_Forest_Classifier(test)
     elif algorithm == 'easy':
         prediction, accuracy_score = Easy_Ensemble_Adaboost_Classifier(test) 
-    loss = 'The closing price will be less than the opening price'
-    gain = 'The closing price will be greater than the opening price'
+    accuracy_score = accuracy_score * 100
+    accuracy_score = "{:.2f}%".format(accuracy_score) 
+    loss = 'Closing price < Opening price'
+    gain = 'Closing price > Opening price'
     direction = loss if prediction == 0 else gain
     data = {"accuracy_score":accuracy_score, "ticker": ticker, "prediction": direction}
     return data
