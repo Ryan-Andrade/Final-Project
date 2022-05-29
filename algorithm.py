@@ -25,12 +25,13 @@ def mongo_connection():
     document = collection.find_one()
     ticker = document['ticker']
     algorithm = document['algorithm']
-    return ticker, algorithm
+    period = document['period']
+    return ticker, algorithm, period
 
 def download_data():
-    ticker, algorithm = mongo_connection()
+    ticker, algorithm, period = mongo_connection()
     ticker = yf.Ticker(ticker)
-    data = ticker.history(period='max')
+    data = ticker.history(period=period)
     data = pd.DataFrame(data)
     data = data[:-1]
     data['Day Result'] = np.where(data['Close'] > data['Open'], 1, 0)
@@ -121,7 +122,7 @@ def Easy_Ensemble_Adaboost_Classifier(test):
     return prediction, accuracy_score
 
 def test_data():
-    ticker, algorithm = mongo_connection()
+    ticker, algorithm, period = mongo_connection()
     ticker = yf.Ticker(ticker)
     test_data = ticker.history(period='1d')
     cleaned_test_data = test_data.drop(['Volume', 'Close'], axis=1)
@@ -133,7 +134,7 @@ def test_data():
 
 def machine_learning():
     test = test_data()
-    ticker, algorithm = mongo_connection()
+    ticker, algorithm, period = mongo_connection()
     if algorithm == 'naive':
         prediction, accuracy_score = Naive_Random_Oversampling(test)
     elif algorithm == 'smote':
