@@ -21,7 +21,7 @@ def test():
     output = request.get_json()
     result = json.loads(output)
     print(result)
-    mongo.db.prediction.replace_one({}, {'ticker': result}, upsert=True) # Store only one result to MongoDB collection
+    mongo.db.prediction.update_one({}, {'$set': result}, upsert=True) # Store only one result to MongoDB collection
     return result
 
 @app.route('/ml')

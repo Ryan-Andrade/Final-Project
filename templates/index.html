@@ -16,7 +16,7 @@
                 </h1>
             </div>
             <div class="col-md-3">
-                <select name="algorithms" id="algorithms">
+                <select name="algorithms" id="algorithms" onchange="myfunction();">
                     <option value="select"> Select an ML algorithm...</option>
                     <option value="naive">Naive Random Oversampling</option>
                     <option value="smote">SMOTE Oversampling</option>
@@ -29,7 +29,7 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <input type="text" id="search"
-                    onchange="myfunction(this.value);"
+                    onchange="myfunction();"
                     class="form-control form-control-lg"
                     placeholder="Enter stock symbol...">
                 </div>
@@ -89,9 +89,12 @@
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js">
         </script>
         <script>
-            function myfunction(stock) {
-            
-                const s = JSON.stringify(stock); // Stringify converts a JavaScript object or value to a JSON string
+            function myfunction() {
+                const algorithm = document.getElementById("algorithms").value;
+                const ticker = document.getElementById("search").value;
+                const dict_values = {algorithm, ticker};
+
+                const s = JSON.stringify(dict_values); // Stringify converts a JavaScript object or value to a JSON string
                 console.log(s); // Prints the variables to console window, which are in the JSON format
                 $.ajax({
                     url:"/test",

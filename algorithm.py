@@ -10,6 +10,11 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import balanced_accuracy_score
 from imblearn.over_sampling import RandomOverSampler
+from imblearn.over_sampling import SMOTE
+from imblearn.under_sampling import RandomUnderSampler
+from imblearn.combine import SMOTEENN
+from imblearn.ensemble import BalancedRandomForestClassifier
+from imblearn.ensemble import EasyEnsembleClassifier
 le = LabelEncoder()
 scaler = StandardScaler()
 
@@ -19,15 +24,17 @@ def mongo_connection():
     collection = db.prediction
     document = collection.find_one()
     ticker = document['ticker']
-    return ticker
+    algorithm = document['algorithm']
+    return ticker, algorithm
 
 def download_data():
-    ticker = yf.Ticker(mongo_connection())
-    data = ticker.history(period='2y')
+    ticker, algorithm = mongo_connection()
+    ticker = yf.Ticker(ticker)
+    data = ticker.history(period='max')
     data = pd.DataFrame(data)
     data = data[:-1]
     data['Day Result'] = np.where(data['Close'] > data['Open'], 1, 0)
-    data.drop(['Volume', 'Close', 'Dividends', 'Stock Splits'], axis=1, inplace=True)    
+    data.drop(['Volume', 'Close'], axis=1, inplace=True)    
     return data
 
 def preprocessing():
@@ -44,10 +51,10 @@ def preprocessing():
     # Scale and normalize the data
     X_train_scaled = scaler.fit_transform(X_train)
     X_test_scaled = scaler.fit_transform(X_test)
-    return X_train_scaled, X_test_scaled, y_train, y_test
+    return X_train_scaled, X_test_scaled, X_train, y_train, y_test, X, y
 
 def Naive_Random_Oversampling(test):
-    X_train_scaled, X_test_scaled, y_train, y_test = preprocessing()
+    X_train_scaled, X_test_scaled, X_train, y_train, y_test, X, y = preprocessing()
     # Naive Random Oversampling
     ros = RandomOverSampler(random_state=0)
     X_res, y_res = ros.fit_resample(X_train_scaled, y_train)
@@ -59,10 +66,65 @@ def Naive_Random_Oversampling(test):
     prediction = logreg.predict(test)
     return prediction, accuracy_score
 
+def SMOTE_Oversampling(test):
+    X_train_scaled, X_test_scaled, X_train, y_train, y_test, X, y = preprocessing()
+    # Resample the training data with SMOTE
+    X_res, y_res = SMOTE(random_state=1, sampling_strategy='auto').fit_resample(X_train, y_train)
+    # Train the logistic regression model using resampled data
+    logreg = LogisticRegression(solver='lbfgs', random_state=1)
+    logreg.fit(X_res, y_res)
+    y_pred = logreg.predict(X_test_scaled)
+    accuracy_score = balanced_accuracy_score(y_test, y_pred)
+    prediction = logreg.predict(test)
+    return prediction, accuracy_score
+
+def Cluster_Centroids_Undersampling(test):
+    X_train_scaled, X_test_scaled, X_train, y_train, y_test, X, y = preprocessing()
+    rus = RandomUnderSampler(random_state=1)
+    X_res, y_res = rus.fit_resample(X_train, y_train)
+    # Train the logistic regression model using resampled data
+    logreg = LogisticRegression(solver='lbfgs', random_state=1)
+    logreg.fit(X_res, y_res)
+    y_pred = logreg.predict(X_test_scaled)
+    accuracy_score = balanced_accuracy_score(y_test, y_pred)
+    prediction = logreg.predict(test)
+    return prediction, accuracy_score
+
+def SMOTE_ENN(test):
+    X_train_scaled, X_test_scaled, X_train, y_train, y_test, X, y = preprocessing()
+    smote_enn = SMOTEENN(random_state=1)
+    X_res, y_res = smote_enn.fit_resample(X, y)
+    # Train the logistic regression model using resampled data
+    logreg = LogisticRegression(solver='lbfgs', random_state=1)
+    logreg.fit(X_res, y_res)
+    y_pred = logreg.predict(X_test_scaled)
+    accuracy_score = balanced_accuracy_score(y_test, y_pred)
+    prediction = logreg.predict(test)
+    return prediction, accuracy_score
+
+def Balanced_Random_Forest_Classifier(test):
+    X_train_scaled, X_test_scaled, X_train, y_train, y_test, X, y = preprocessing()
+    rf_model = BalancedRandomForestClassifier(n_estimators=100, random_state=1) 
+    rf_model = rf_model.fit(X_train_scaled, y_train)
+    predictions = rf_model.predict(X_test_scaled)
+    accuracy_score = balanced_accuracy_score(y_test, predictions)
+    prediction = rf_model.predict(test)
+    return prediction, accuracy_score
+
+def Easy_Ensemble_Adaboost_Classifier(test):
+    X_train_scaled, X_test_scaled, X_train, y_train, y_test, X, y = preprocessing()
+    rf_model = EasyEnsembleClassifier(n_estimators=100, random_state=1) 
+    rf_model = rf_model.fit(X_train_scaled, y_train)
+    predictions = rf_model.predict(X_test_scaled)
+    accuracy_score = balanced_accuracy_score(y_test, predictions)
+    prediction = rf_model.predict(test)
+    return prediction, accuracy_score
+
 def test_data():
-    ticker = yf.Ticker(mongo_connection())
+    ticker, algorithm = mongo_connection()
+    ticker = yf.Ticker(ticker)
     test_data = ticker.history(period='1d')
-    cleaned_test_data = test_data.drop(['Volume', 'Close', 'Dividends', 'Stock Splits'], axis=1)
+    cleaned_test_data = test_data.drop(['Volume', 'Close'], axis=1)
     cleaned_test_data['Open'] = le.fit_transform(cleaned_test_data['Open'])
     cleaned_test_data['High'] = le.fit_transform(cleaned_test_data['High'])
     cleaned_test_data['Low'] = le.fit_transform(cleaned_test_data['Low'])
@@ -70,9 +132,20 @@ def test_data():
     return cleaned_scaled_test_data
 
 def machine_learning():
-    ticker = mongo_connection()
     test = test_data()
-    prediction, accuracy_score = Naive_Random_Oversampling(test)
+    ticker, algorithm = mongo_connection()
+    if algorithm == 'naive':
+        prediction, accuracy_score = Naive_Random_Oversampling(test)
+    elif algorithm == 'smote':
+        prediction, accuracy_score = SMOTE_Oversampling(test)
+    elif algorithm == 'under':
+        prediction, accuracy_score = Cluster_Centroids_Undersampling(test)
+    elif algorithm == 'smoteenn':
+        prediction, accuracy_score = SMOTE_ENN(test)
+    elif algorithm == 'balanced':
+        prediction, accuracy_score = Balanced_Random_Forest_Classifier(test)
+    elif algorithm == 'easy':
+        prediction, accuracy_score = Easy_Ensemble_Adaboost_Classifier(test) 
     loss = 'The closing price will be less than the opening price'
     gain = 'The closing price will be greater than the opening price'
     direction = loss if prediction == 0 else gain
