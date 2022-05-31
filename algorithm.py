@@ -2,7 +2,6 @@
 import numpy as np
 import pandas as pd
 import yfinance as yf
-import datetime as dt
 from pymongo import MongoClient
 from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import LabelEncoder
@@ -15,9 +14,13 @@ from imblearn.under_sampling import RandomUnderSampler
 from imblearn.combine import SMOTEENN
 from imblearn.ensemble import BalancedRandomForestClassifier
 from imblearn.ensemble import EasyEnsembleClassifier
+
+# Global variables
 le = LabelEncoder()
 scaler = StandardScaler()
 
+# Sets up the connection to the MongoDB database
+# Gets the ticker, algorithm, and period from the user input on the website
 def mongo_connection():
     client = MongoClient("mongodb://localhost:27017/")
     db = client.stock_prediction
@@ -28,6 +31,9 @@ def mongo_connection():
     period = document['period']
     return ticker, algorithm, period
 
+# Downloads the data from Yahoo Finance, Sets up the dataframe,
+# Compares if Open price is less than Close Price, then creates a column with a boolean value,
+# Drops the columns that are not needed, and returns the dataframe
 def download_data():
     ticker, algorithm, period = mongo_connection()
     ticker = yf.Ticker(ticker)
@@ -38,6 +44,9 @@ def download_data():
     data.drop(['Volume', 'Close'], axis=1, inplace=True)    
     return data
 
+# A function that takes the data, transforms it,
+# Splits the data into training and testing data,
+# Scales the data, and returns the the dataframes
 def preprocessing():
     data = download_data()
     # Encode the data
@@ -54,6 +63,9 @@ def preprocessing():
     X_test_scaled = scaler.fit_transform(X_test)
     return X_train_scaled, X_test_scaled, X_train, y_train, y_test, X, y
 
+# A function that performs Naive Random Oversampling
+# Uses the preprocessing function to get the test and training data
+# Returns the prediction and the accuracy score
 def Naive_Random_Oversampling(test):
     X_train_scaled, X_test_scaled, X_train, y_train, y_test, X, y = preprocessing()
     # Naive Random Oversampling
@@ -67,6 +79,9 @@ def Naive_Random_Oversampling(test):
     prediction = logreg.predict(test)
     return prediction, accuracy_score
 
+# A function that performs SMOTE
+# Uses the preprocessing function to get the test and training data
+# Returns the prediction and the accuracy score
 def SMOTE_Oversampling(test):
     X_train_scaled, X_test_scaled, X_train, y_train, y_test, X, y = preprocessing()
     # Resample the training data with SMOTE
@@ -79,6 +94,9 @@ def SMOTE_Oversampling(test):
     prediction = logreg.predict(test)
     return prediction, accuracy_score
 
+# A function that performs Cluster Centroid Undersampling
+# Uses the preprocessing function to get the test and training data
+# Returns the prediction and the accuracy score
 def Cluster_Centroids_Undersampling(test):
     X_train_scaled, X_test_scaled, X_train, y_train, y_test, X, y = preprocessing()
     rus = RandomUnderSampler(random_state=1)
@@ -91,6 +109,9 @@ def Cluster_Centroids_Undersampling(test):
     prediction = logreg.predict(test)
     return prediction, accuracy_score
 
+# A function that performs SMOTEENN
+# Uses the preprocessing function to get the test and training data
+# Returns the prediction and the accuracy score
 def SMOTE_ENN(test):
     X_train_scaled, X_test_scaled, X_train, y_train, y_test, X, y = preprocessing()
     smote_enn = SMOTEENN(random_state=1)
@@ -103,6 +124,9 @@ def SMOTE_ENN(test):
     prediction = logreg.predict(test)
     return prediction, accuracy_score
 
+# A function that performs the  Balanced Random Forest
+# Uses the preprocessing function to get the test and training data
+# Returns the prediction and the accuracy score
 def Balanced_Random_Forest_Classifier(test):
     X_train_scaled, X_test_scaled, X_train, y_train, y_test, X, y = preprocessing()
     rf_model = BalancedRandomForestClassifier(n_estimators=100, random_state=1) 
@@ -112,6 +136,9 @@ def Balanced_Random_Forest_Classifier(test):
     prediction = rf_model.predict(test)
     return prediction, accuracy_score
 
+# A function that performs the Easy Ensemble AdaBoost Classifier
+# Uses the preprocessing function to get the test and training data
+# Returns the prediction and the accuracy score
 def Easy_Ensemble_Adaboost_Classifier(test):
     X_train_scaled, X_test_scaled, X_train, y_train, y_test, X, y = preprocessing()
     rf_model = EasyEnsembleClassifier(n_estimators=100, random_state=1) 
@@ -121,6 +148,8 @@ def Easy_Ensemble_Adaboost_Classifier(test):
     prediction = rf_model.predict(test)
     return prediction, accuracy_score
 
+# A function that uses the the user input and downloads the last day of the last trading day of stock data
+# Cleans, transforms, scales, and returns the dataframe
 def test_data():
     ticker, algorithm, period = mongo_connection()
     ticker = yf.Ticker(ticker)
@@ -132,9 +161,13 @@ def test_data():
     cleaned_scaled_test_data = scaler.fit_transform(cleaned_test_data)
     return cleaned_scaled_test_data
 
+# The main function that calls the other functions based on the user input
+# Returns the prediction and the accuracy score of the selected ML algorithm
 def machine_learning():
     test = test_data()
     ticker, algorithm, period = mongo_connection()
+
+    # If statements that call the appropriate function based on the user input
     if algorithm == 'naive':
         prediction, accuracy_score = Naive_Random_Oversampling(test)
     elif algorithm == 'smote':
@@ -146,11 +179,19 @@ def machine_learning():
     elif algorithm == 'balanced':
         prediction, accuracy_score = Balanced_Random_Forest_Classifier(test)
     elif algorithm == 'easy':
-        prediction, accuracy_score = Easy_Ensemble_Adaboost_Classifier(test) 
+        prediction, accuracy_score = Easy_Ensemble_Adaboost_Classifier(test)
+
+    # Takes the accuracy score and converts it to a percentage 
     accuracy_score = accuracy_score * 100
-    accuracy_score = "{:.2f}%".format(accuracy_score) 
+    accuracy_score = "{:.2f}%".format(accuracy_score)
+
+    # String variables that are used whether the stock prices went up or down 
     loss = 'Closing price < Opening price'
     gain = 'Closing price > Opening price'
+
+    # Sets the appropriate string based on the prediction
     direction = loss if prediction == 0 else gain
+
+    # Returns the accuracy score and the prediction of the selected ML algorithm
     data = {"accuracy_score":accuracy_score, "ticker": ticker, "prediction": direction}
     return data

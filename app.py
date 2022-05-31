@@ -11,11 +11,12 @@ app = Flask(__name__)
 app.config["MONGO_URI"] = "mongodb://localhost:27017/stock_prediction"
 mongo = PyMongo(app)
 
+# Default Route
 @app.route('/')
 def index():
     prediction = mongo.db.prediction.find_one()
     return render_template('index.html', prediction=prediction)
-    
+ 
 @app.route('/test', methods=['POST'])
 def test():
     output = request.get_json()
@@ -24,6 +25,7 @@ def test():
     mongo.db.prediction.update_one({}, {'$set': result}, upsert=True) # Store only one result to MongoDB collection
     return result
 
+# Route that calls the function to run the model and predict whether the stock will go up or down
 @app.route('/ml')
 def logistic_regression():
     prediction = mongo.db.prediction

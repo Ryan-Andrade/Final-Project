@@ -1,4 +1,22 @@
-# Final-Project
+# Stock Analysis Project
+
+## Overview
+
+We are analyzing stocks and determining whether or not the closing price will be greated than the opening price. We set up a flask app and get the user inputs to determine what stock to analyze, what time period we are training the models on, and for which machine learning algorithm we are using. Our algorithm uses the last day of trading as the test data and returns our prediction and accuracy.
+
+### Tools Used
+- IDE Used: VSCode
+- Languages Used: Python, Javascript, HTML, CSS
+- Libraries Used: Flask, Imbalanced-Learn, MatPlotLib, Numpy, Pandas, PyMongo, SKLearn, yFinance
+
+### Sources
+- Stock Data: Yahoo Finance using the yFinance API
+- CSS Styling: A theme from https://bootswatch.com
+- Ticker JSON: 
+- HTML Dropdown menu: 
+
+
+# -----------
 
 ## Price Direction Prediction
 The idea behind this project is to prediction the price direction of 10 energy stocks.  
