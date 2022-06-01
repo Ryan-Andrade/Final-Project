@@ -3,7 +3,7 @@ const matchList = document.getElementById('match-list');
 
 // Search stocks.json and filter it
 const searchStocks = async searchText => {
-    const res = await fetch('../static/data/stocks1.json');
+    const res = await fetch('../static/data/stockTickerInfo.json');
     const stocks = await res.json();
 
     console.log(stocks);
@@ -27,7 +27,7 @@ const outputHtml = matches => {
     if(matches.length > 0) {
         const html = matches.map(
             match => `
-            <div class="card card-body mb-1" id=${match.ticker} onclick= "autofill('${match.ticker}');">
+            <div class="card card-body mb-1" onclick= "autofill('${match.ticker}');">
                 <h4>Ticker: ${match.ticker}</h4>
                 <p>Company Name: ${match.name}</p>
             </div>
@@ -39,12 +39,11 @@ const outputHtml = matches => {
     }
 };
 
-//document.onclick = autofill
-
-function autofill(clicked_id) {
-    clicked_id.cancelBubble = true;
-    console.log(clicked_id);
-    document.getElementById('search').value = clicked_id;
+// Gets called when the user clicks on the search results,
+// Inserts the ticker into the search bar,
+// Calls myFunction() to update the data.
+function autofill(clicked_ticker) {
+    document.getElementById('search').value = clicked_ticker;
     myFunction();
 }
 

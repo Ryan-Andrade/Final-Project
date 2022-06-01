@@ -14,7 +14,11 @@ We are analyzing stocks and determining whether or not the closing price will be
 - CSS Styling: A theme from https://bootswatch.com
 - Trading Widget: TradingView widget from https://www.tradingview.com/widget/advanced-chart/
 - Ticker JSON: 
-- HTML Dropdown menu: 
+- HTML Search Results: 
+
+### Issues
+- Some stocks in the JSON arent available through yfinance; need to make an error page.
+- Since we transform the data, we are rounding to the nearest integer. Skews results, especially on low cost stocks.
 
 
 # -----------

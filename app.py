@@ -19,9 +19,6 @@ mongo = PyMongo(app)
 def index():
     prediction = mongo.db.prediction.find_one()
     return render_template('index.html', prediction=prediction)
-
-    # prediction = mongo.db.stock_prediction.find_one()
-    # return render_template('index.html', prediction=prediction)
  
 @app.route('/test', methods=['POST'])
 def test():
