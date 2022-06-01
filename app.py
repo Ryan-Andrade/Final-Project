@@ -9,6 +9,9 @@ app = Flask(__name__)
 
 # Use flask_pymongo to set up mongo connection
 app.config["MONGO_URI"] = "mongodb://localhost:27017/stock_prediction"
+# Cloud version
+# app.config["MONGO_URI"] = 'mongodb+srv://admin:JQxq0gjqpNrwRN7u@cluster0.ajssr.mongodb.net/stock_prediction'
+
 mongo = PyMongo(app)
 
 # Default Route
@@ -16,6 +19,9 @@ mongo = PyMongo(app)
 def index():
     prediction = mongo.db.prediction.find_one()
     return render_template('index.html', prediction=prediction)
+
+    # prediction = mongo.db.stock_prediction.find_one()
+    # return render_template('index.html', prediction=prediction)
  
 @app.route('/test', methods=['POST'])
 def test():
