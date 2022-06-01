@@ -22,7 +22,10 @@ scaler = StandardScaler()
 # Sets up the connection to the MongoDB database
 # Gets the ticker, algorithm, and period from the user input on the website
 def mongo_connection():
+    # Local
     client = MongoClient("mongodb://localhost:27017/")
+    # Remote
+    # client = MongoClient('mongodb+srv://admin:JQxq0gjqpNrwRN7u@cluster0.ajssr.mongodb.net/stock_prediction')
     db = client.stock_prediction
     collection = db.prediction
     document = collection.find_one()
@@ -31,7 +34,7 @@ def mongo_connection():
     period = document['period']
     return ticker, algorithm, period
 
-# Downloads the data from Yahoo Finance, Sets up the dataframe,
+# Downloads the data from Yahoo Finance, Sets up the dataframe, Drops the last trading day which is used for the test
 # Compares if Open price is less than Close Price, then creates a column with a boolean value,
 # Drops the columns that are not needed, and returns the dataframe
 def download_data():

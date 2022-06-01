@@ -1,176 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Price Direction</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
-</head>
-<body>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12 m-auto">
-                <h1 class="text-center mb-3">
-                    Stock Closing Price Prediction
-                </h1>
-                <p>This application has been developed to assist day traders with their investment decisions. It is a supervised machine learning algorithm that trains on 3 simple time-series variables: Opening, High, and Low prices to determine the direction of the closing price. Users have the ability to customize which algorithm they would like to use, as well as the amount of historical data they would like the algorithm to train on. Day traders can leverage this application during market hours whenever new high or low prices are recorded. </p>
-                <p> Enjoy! </p>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-3">
-                <select name="algorithms" id="algorithms" onchange="myfunction();">
-                    <option value="naive"> Select an ML algorithm...</option>
-                    <option value="naive">Naive Random Oversampling</option>
-                    <option value="smote">SMOTE Oversampling</option>
-                    <option value="under">Cluster Centroids Undersampling</option>
-                    <option value="smoteenn">SMOTEENN</option>
-                    <option value="balanced">Balanced Random Forest Classifier</option>
-                    <option value="easy">Easy Ensemble Adaboost Classifier</option>
-                </select>
-                <select name="period" id="period" onchange="myfunction();">
-                    <option value="2y"> Select a training period...</option>
-                    <option value="5d">5 days</option>
-                    <option value="1mo">1 month</option>
-                    <option value="3mo">3 months</option>
-                    <option value="6mo">6 months</option>
-                    <option value="1y">1 year</option>
-                    <option value="2y">2 years</option>
-                    <option value="5y">5 years</option>
-                    <option value="10y">10 years</option>
-                    <option value="ytd">Year to Date</option>
-                    <option value="max">All Data Available</option>
-                </select>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <input type="text" id="search"
-                    onchange="myfunction();"
-                    class="form-control form-control-lg"
-                    placeholder="Enter stock symbol...">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Price Direction</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 m-auto">
+                    <h1 class="text-center mb-3">
+                        Stock Closing Price Prediction
+                    </h1>
+                    <p>This application has been developed to assist day traders with their investment decisions. It is a supervised machine learning algorithm that trains on 3 simple time-series variables: Opening, High, and Low prices to determine the direction of the closing price. Users have the ability to customize which algorithm they would like to use, as well as the amount of historical data they would like the algorithm to train on. Day traders can leverage this application during market hours whenever new high or low prices are recorded. </p>
+                    <p> Enjoy! </p>
                 </div>
-                <div id="match-list"></div>
             </div>
-            <div class="col-md-3">
-                 <!-- Add a button to activate scraping script -->
-                <p><a class="btn btn-warning btn-lg" href="/ml" role="button">Run The Algorithm</a></p>
-            </div>
-        </div>
-    </div>
-    <script>
-        const search = document.getElementById('search');
-        const matchList = document.getElementById('match-list');
-
-        // Search stocks.json and filter it
-        const searchStocks = async searchText => {
-            const res = await fetch('../static/data/stocks1.json');
-            const stocks = await res.json();
-
-            console.log(stocks);
-
-            // Get matches to current text input
-            let matches = stocks.filter(stock => {
-                const regex = new RegExp(`^${searchText}`, 'gi');
-                return stock.ticker.match(regex) || stock.name.match(regex)
-            });
-
-            if(searchText.length == 0) {
-                matches = [];
-                matchList.innerHTML = '';
-            }
-
-            outputHtml(matches);
-        };
-
-        // Show results in HTML
-        const outputHtml = matches => {
-            if(matches.length > 0) {
-                const html = matches.map(
-                    match => `
-                    <div class="card card-body mb-1">
-                        <h4>${match.name} (${match.ticker})
-                        </h4>
+            <div class="row">
+                <div class="col-md-3">
+                    <select name="algorithms" id="algorithms" onchange="myFunction();">
+                        <option value="naive"> Select an ML algorithm...</option>
+                        <option value="naive">Naive Random Oversampling</option>
+                        <option value="smote">SMOTE Oversampling</option>
+                        <option value="under">Cluster Centroids Undersampling</option>
+                        <option value="smoteenn">SMOTEENN</option>
+                        <option value="balanced">Balanced Random Forest Classifier</option>
+                        <option value="easy">Easy Ensemble Adaboost Classifier</option>
+                    </select>
+                    <select name="period" id="period" onchange="myFunction();">
+                        <option value="2y"> Select a training period...</option>
+                        <option value="5d">5 days</option>
+                        <option value="1mo">1 month</option>
+                        <option value="3mo">3 months</option>
+                        <option value="6mo">6 months</option>
+                        <option value="1y">1 year</option>
+                        <option value="2y">2 years</option>
+                        <option value="5y">5 years</option>
+                        <option value="10y">10 years</option>
+                        <option value="ytd">Year to Date</option>
+                        <option value="max">All Data Available</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <input type="text" id="search"
+                        onchange="myFunction();"
+                        class="form-control form-control-lg"
+                        placeholder="Enter stock symbol...">
                     </div>
-                `
-                )
-                .join('');
-
-            matchList.innerHTML = html;
-            }
-        }
-
-
-        search.addEventListener('input', () => searchStocks(search.value));
-    </script>
-        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js">
-        </script>
-        <script>
-            function myfunction() {
-                const algorithm = document.getElementById("algorithms").value;
-                const period = document.getElementById("period").value;
-                const ticker = document.getElementById("search").value;
-                const dict_values = {algorithm, ticker, period};
-
-                const s = JSON.stringify(dict_values); // Stringify converts a JavaScript object or value to a JSON string
-                console.log(s); // Prints the variables to console window, which are in the JSON format
-                $.ajax({
-                    url:"/test",
-                    type:"POST",
-                    contentType: "application/json",
-                    data: JSON.stringify(s)});
-            }
-        </script>
-    </div>
-    <div class="row">
-        <div class="col-md-4 m-auto">
-          <h4 class="text-center display-10">Stock Symbol</h4>
-          <h4 class="text-center media-heading">{{ prediction.ticker}}</h4>
+                    <div id="match-list"></div>
+                </div>
+                <div class="col-md-3">
+                    <!-- Add a button to activate scraping script -->
+                    <p><a class="btn btn-warning btn-lg" href="/ml" role="button">Run The Algorithm</a></p>
+                </div>
+            </div>
         </div>
-        <div class="col-md-4 m-auto">
-          <h4 class="text-center display-10">Accuracy Score</h4>
-          <h4 class="text-center media-heading">{{ prediction.accuracy_score }}</h4>
+
         </div>
-        <div class="col-md-4 m-auto">
-          <h4 class="text-center display-10">Prediction</h4>
-          <h4 class="text-center media-heading">{{ prediction.prediction }}</h4>
+        <div class="row">
+            <div class="col-md-4 m-auto">
+            <h4 class="text-center display-10">Stock Symbol</h4>
+            <h4 id= "ticker" class="text-center media-heading">{{ prediction.ticker}}</h4>
+            </div>
+            <div class="col-md-4 m-auto">
+            <h4 class="text-center display-10">Accuracy Score</h4>
+            <h4 class="text-center media-heading">{{ prediction.accuracy_score }}</h4>
+            </div>
+            <div class="col-md-4 m-auto">
+            <h4 class="text-center display-10">Prediction</h4>
+            <h4 class="text-center media-heading">{{ prediction.prediction }}</h4>
+            </div>
         </div>
-    </div>
-    <!-- TradingView Widget BEGIN -->
-    <div class="col-md-6 m-auto">
-        <div id="tradingview_0a9d5"></div>
+        <div class="col-md-6 m-auto">
+            <div id="tradingview_0a9d5"></div>
+        </div>
+
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
         <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-        <script type="text/javascript">
-        const ticker = {{ prediction.ticker | tojson }}
-        new TradingView.MediumWidget(
-        {
-        "symbols": [
-        [
-            ticker,
-        ]
-        ],
-        "chartOnly": false,
-        "width": 1000,
-        "height": 500,
-        "locale": "en",
-        "colorTheme": "light",
-        "isTransparent": false,
-        "autosize": false,
-        "showVolume": false,
-        "hideDateRanges": false,
-        "scalePosition": "right",
-        "scaleMode": "Normal",
-        "fontFamily": "-apple-system, BlinkMacSystemFont, Trebuchet MS, Roboto, Ubuntu, sans-serif",
-        "noTimeScale": false,
-        "valuesTracking": "1",
-        "chartType": "line",
-        "fontColor": "#787b86",
-        "gridLineColor": "rgba(42, 46, 57, 0.06)",
-        "container_id": "tradingview_0a9d5"
-        }
-        );
-        </script>
-    </div>
-  <!-- TradingView Widget END -->
-</body>
+        
+        <script src = {{ url_for('static', filename='js/myFunction.js') }}></script>
+        <script src = {{ url_for('static', filename='js/stockSearch.js') }}></script>
+        <script src = {{ url_for('static', filename='js/tradingViewWidget.js') }}></script>
+    </body>
 </html>

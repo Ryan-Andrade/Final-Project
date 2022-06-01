@@ -12,6 +12,7 @@ We are analyzing stocks and determining whether or not the closing price will be
 ### Sources
 - Stock Data: Yahoo Finance using the yFinance API
 - CSS Styling: A theme from https://bootswatch.com
+- Trading Widget: TradingView widget from https://www.tradingview.com/widget/advanced-chart/
 - Ticker JSON: 
 - HTML Dropdown menu: 
 
