@@ -25,7 +25,7 @@ def mongo_connection():
     # Local
     client = MongoClient("mongodb://localhost:27017/")
     # Remote
-    # client = MongoClient('mongodb+srv://admin:JQxq0gjqpNrwRN7u@cluster0.ajssr.mongodb.net/stock_prediction')
+    # client = MongoClient('mongodb+srv://admin:@cluster0.ajssr.mongodb.net/stock_prediction')
     db = client.stock_prediction
     collection = db.prediction
     document = collection.find_one()
