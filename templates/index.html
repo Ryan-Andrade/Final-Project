@@ -20,7 +20,7 @@
             </div>
             <div class="row">
                 <div class="col-md-3">
-                    <select name="algorithms" id="algorithms" onchange="myFunction();">
+                    <select name="algorithms" id="algorithms">
                         <option value="naive"> Select an ML algorithm...</option>
                         <option value="naive">Naive Random Oversampling</option>
                         <option value="smote">SMOTE Oversampling</option>
@@ -29,7 +29,7 @@
                         <option value="balanced">Balanced Random Forest Classifier</option>
                         <option value="easy">Easy Ensemble Adaboost Classifier</option>
                     </select>
-                    <select name="period" id="period" onchange="myFunction();">
+                    <select name="period" id="period">
                         <option value="2y"> Select a training period...</option>
                         <option value="5d">5 days</option>
                         <option value="1mo">1 month</option>
@@ -46,7 +46,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <input type="text" id="search"
-                        onchange="myFunction();"
+        
                         class="form-control form-control-lg"
                         placeholder="Enter stock symbol...">
                     </div>
@@ -54,7 +54,7 @@
                 </div>
                 <div class="col-md-3">
                     <!-- Add a button to activate scraping script -->
-                    <p><a class="btn btn-warning btn-lg" href="/ml" role="button">Run The Algorithm</a></p>
+                    <p><a class="btn btn-warning btn-lg" href="/ml" role="button" onclick="myFunction();">Run The Algorithm</a></p>
                 </div>
             </div>
         </div>

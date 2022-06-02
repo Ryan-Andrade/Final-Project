@@ -2,7 +2,6 @@ import json
 from flask import request
 from flask import Flask, render_template, redirect
 from flask_pymongo import PyMongo
-from matplotlib import ticker
 import algorithm
 
 app = Flask(__name__)
