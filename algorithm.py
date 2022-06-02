@@ -167,34 +167,38 @@ def test_data():
 # The main function that calls the other functions based on the user input
 # Returns the prediction and the accuracy score of the selected ML algorithm
 def machine_learning():
-    test = test_data()
-    ticker, algorithm, period = mongo_connection()
+    try: 
 
-    # If statements that call the appropriate function based on the user input
-    if algorithm == 'naive':
-        prediction, accuracy_score = Naive_Random_Oversampling(test)
-    elif algorithm == 'smote':
-        prediction, accuracy_score = SMOTE_Oversampling(test)
-    elif algorithm == 'under':
-        prediction, accuracy_score = Cluster_Centroids_Undersampling(test)
-    elif algorithm == 'smoteenn':
-        prediction, accuracy_score = SMOTE_ENN(test)
-    elif algorithm == 'balanced':
-        prediction, accuracy_score = Balanced_Random_Forest_Classifier(test)
-    elif algorithm == 'easy':
-        prediction, accuracy_score = Easy_Ensemble_Adaboost_Classifier(test)
+        test = test_data()
+        ticker, algorithm, period = mongo_connection()
 
-    # Takes the accuracy score and converts it to a percentage 
-    accuracy_score = accuracy_score * 100
-    accuracy_score = "{:.2f}%".format(accuracy_score)
+        # If statements that call the appropriate function based on the user input
+        if algorithm == 'naive':
+            prediction, accuracy_score = Naive_Random_Oversampling(test)
+        elif algorithm == 'smote':
+            prediction, accuracy_score = SMOTE_Oversampling(test)
+        elif algorithm == 'under':
+            prediction, accuracy_score = Cluster_Centroids_Undersampling(test)
+        elif algorithm == 'smoteenn':
+            prediction, accuracy_score = SMOTE_ENN(test)
+        elif algorithm == 'balanced':
+            prediction, accuracy_score = Balanced_Random_Forest_Classifier(test)
+        elif algorithm == 'easy':
+            prediction, accuracy_score = Easy_Ensemble_Adaboost_Classifier(test)
 
-    # String variables that are used whether the stock prices went up or down 
-    loss = 'Closing price < Opening price'
-    gain = 'Closing price > Opening price'
+        # Takes the accuracy score and converts it to a percentage 
+        accuracy_score = accuracy_score * 100
+        accuracy_score = "{:.2f}%".format(accuracy_score)
 
-    # Sets the appropriate string based on the prediction
-    direction = loss if prediction == 0 else gain
+        # String variables that are used whether the stock prices went up or down 
+        loss = 'Closing price < Opening price'
+        gain = 'Closing price > Opening price'
 
-    # Returns the accuracy score and the prediction of the selected ML algorithm
-    data = {"accuracy_score":accuracy_score, "ticker": ticker, "prediction": direction}
+        # Sets the appropriate string based on the prediction
+        direction = loss if prediction == 0 else gain
+    except:
+        data = {"accuracy_score":"Null", "ticker": "Error", "prediction": "N/A"}
+    else:
+        # Returns the accuracy score and the prediction of the selected ML algorithm
+        data = {"accuracy_score":accuracy_score, "ticker": ticker, "prediction": direction}
     return data
