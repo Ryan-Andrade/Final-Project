@@ -6,3 +6,4 @@ sklearn
 imblearn
 yfinance
 pymongo
+flask_pymongo
