@@ -1,0 +1,8 @@
+gunicorn
+flask
+numpy
+pandas
+sklearn
+imblearn
+yfinance
+pymongo
