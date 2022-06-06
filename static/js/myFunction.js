@@ -5,7 +5,6 @@ function myFunction() {
     const dict_values = {algorithm, ticker, period};
 
     const s = JSON.stringify(dict_values); // Stringify converts a JavaScript object or value to a JSON string
-    console.log(s); // Prints the variables to console window, which are in the JSON format
     $.ajax({
         url:"/test",
         type:"POST",

@@ -3,14 +3,14 @@
     <head>
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Price Direction</title>
         <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
     </head>
     <body>
         <div class="container">
             <div class="row">
-                <div class="col-sm-12 m-auto">
+                <div class="col-md-12 m-auto">
                     <h1 class="text-center mb-3">
                         Stock Closing Price Prediction
                     </h1>
@@ -19,7 +19,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-3">
+                <div class="col-md-3">
                     <select name="algorithms" id="algorithms">
                         <option value="naive"> Select an ML algorithm...</option>
                         <option value="naive">Naive Random Oversampling</option>
@@ -74,11 +74,11 @@
             <h4 class="text-center media-heading">{{ prediction.prediction }}</h4>
             </div>
         </div>
-        <div class="col-sm-6 m-auto">
+        <div class="col-md-6 m-auto">
             <div id="tradingview_0a9d5"></div>
         </div>
 
-        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
         <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
         
         <script src = {{ url_for('static', filename='js/myFunction.js') }}></script>

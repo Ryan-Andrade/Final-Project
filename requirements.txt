@@ -5,6 +5,7 @@ pandas
 sklearn
 imblearn
 yfinance
+pymongo
 pymongo[srv]
 flask_pymongo
 dnspython
