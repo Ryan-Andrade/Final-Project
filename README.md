@@ -24,7 +24,7 @@ We are analyzing stocks and determining whether or not the closing price will be
 # -----------
 
 ## Price Direction Prediction
-The idea behind this project is to prediction the price direction of 10 energy stocks.  
+The idea behind this project is to prediction the price direction of stocks.  
 
 ## Stand UP
 What did you do last time?
