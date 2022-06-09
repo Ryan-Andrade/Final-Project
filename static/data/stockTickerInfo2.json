@@ -2536,11 +2536,11 @@
     "ticker":"GOODO"
     },
     {
-    "name":"Google Inc.",
+    "name":"Alphabet Inc Class C",
     "ticker":"GOOG"
     },
     {
-    "name":"Google Inc.",
+    "name":"Alphabet Inc Class A",
     "ticker":"GOOGL"
     },
     {
@@ -17976,8 +17976,12 @@
     "ticker":"SN"
     },
     {
-    "name":"Snap",
+    "name":"Snap-on Incorporated",
     "ticker":"SNA"
+    },
+    {
+        "name":"Snap Inc.",
+        "ticker":"SNAP"
     },
     {
     "name":"Sony Corporation Common Stock",
@@ -19912,7 +19916,7 @@
     "ticker":"WMS"
     },
     {
-    "name":"Wal",
+    "name":"Walmart Inc.",
     "ticker":"WMT"
     },
     {

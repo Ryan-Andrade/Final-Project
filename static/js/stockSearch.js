@@ -3,7 +3,7 @@ const matchList = document.getElementById('match-list');
 
 // Search stocks.json and filter it
 const searchStocks = async searchText => {
-    const res = await fetch('../static/data/stockTickerInfo2.json');
+    const res = await fetch('../static/data/stockTickerInfo3.json');
     const stocks = await res.json();
 
     console.log(stocks);
