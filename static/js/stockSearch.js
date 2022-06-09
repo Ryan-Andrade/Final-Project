@@ -42,9 +42,11 @@ const outputHtml = matches => {
 // Gets called when the user clicks on the search results,
 // Inserts the ticker into the search bar,
 // Calls myFunction() to update the data.
+// Clears output.
 function autofill(clicked_ticker) {
     document.getElementById('search').value = clicked_ticker;
     myFunction();
+    matchList.innerHTML = '';
 }
 
 
