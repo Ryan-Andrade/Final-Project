@@ -193,8 +193,8 @@ def machine_learning():
         accuracy_score = "{:.2f}%".format(accuracy_score)
 
         # String variables that are used whether the stock prices went up or down 
-        loss = 'Closing price < Opening price'
-        gain = 'Closing price > Opening price'
+        loss = 'Loss'
+        gain = 'Gain'
 
         # Sets the appropriate string based on the prediction
         direction = loss if prediction == 0 else gain
